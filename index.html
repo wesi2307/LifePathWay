@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PathMaker - ADHD Task Engine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px; background-color: #121212; color: #ffffff; max-width: 600px; margin: auto;">
+    <h2 style="color: #00ffcc;">PathMaker: Break the Paralysis</h2>
+    <p style="color: #aaa; font-size: 14px;">Turn overwhelming tasks into an unignorable 3-step sequence.</p>
+    
+    <div style="margin-bottom: 15px;">
+        <input type="text" id="goalInput" placeholder="Enter an overwhelming task..." style="width: 100%; padding: 12px; background: #222; color: white; border: 1px solid #444; box-sizing: border-box; border-radius: 4px; margin-bottom: 10px;">
+        <button onclick="breakTask()" style="padding: 12px 20px; background: #00ffcc; color: black; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;">Generate Micro-Steps</button>
+        <button onclick="clearTasks()" style="padding: 12px 20px; background: #ff3366; color: white; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">Clear</button>
+    </div>
+
+    <ul id="stepList" style="margin-top: 20px; line-height: 1.8; font-size: 16px; padding-left: 20px;"></ul>
+
+    <script>
+        // Load saved tasks from browser memory on startup
+        window.onload = function() {
+            if(localStorage.getItem('savedSteps')) {
+                document.getElementById('stepList').innerHTML = localStorage.getItem('savedSteps');
+            }
+        };
+
+        function breakTask() {
+            let goal = document.getElementById('goalInput').value;
+            if(!goal) return;
+            let steps = `
+                <li style="margin-bottom: 10px;"><b>Step 1:</b> Open the primary tool or website for "${goal}". Do nothing else.</li>
+                <li style="margin-bottom: 10px;"><b>Step 2:</b> Spend exactly 2 minutes setting up the workspace.</li>
+                <li style="margin-bottom: 10px;"><b>Step 3:</b> Execute the absolute smallest first physical action.</li>`;
+            document.getElementById('stepList').innerHTML = steps;
+            localStorage.setItem('savedSteps', steps); // Permanently store in browser cache
+        }
+
+        function clearTasks() {
+            document.getElementById('stepList').innerHTML = '';
+            localStorage.removeItem('savedSteps');
+            document.getElementById('goalInput').value = '';
+        }
+    </script>
+</body>
+</html>
