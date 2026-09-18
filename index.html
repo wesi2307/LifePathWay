@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>LifePathMaker v2 - AI Task Engine</title>
+    <title>LifePathMaker v2.1 - AI Strategic Engine</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #121212; color: #ffffff; max-width: 600px; margin: auto;">
-    <h2 style="color: #00ffcc;">LifePathMaker v2: AI Strategic Engine</h2>
-    <p style="color: #aaa; font-size: 14px;">Transform overwhelming ambitions into an executed 3-step tactical roadmap.</p>
+    <h2 style="color: #00ffcc;">LifePathMaker v2.1: AI Strategic Engine</h2>
+    <p style="color: #aaa; font-size: 14px;">Transform overwhelming ambitions into executed tactical roadmaps.</p>
     
     <div style="margin-bottom: 15px; background: #1e1e1e; padding: 10px; border-radius: 4px; border: 1px solid #333;">
         <label style="font-size: 12px; color: #00ffcc; display: block; margin-bottom: 5px;">Gemini API Key (Stored locally in your browser):</label>
@@ -15,7 +15,17 @@
     </div>
 
     <div style="margin-bottom: 15px;">
-        <textarea id="goalInput" rows="3" placeholder="Enter an overwhelming life goal or complex project..." style="width: 100%; padding: 12px; background: #222; color: white; border: 1px solid #444; box-sizing: border-box; border-radius: 4px; margin-bottom: 10px;"></textarea>
+        <textarea id="goalInput" rows="4" placeholder="Enter an overwhelming life goal or complex project..." style="width: 100%; padding: 12px; background: #222; color: white; border: 1px solid #444; box-sizing: border-box; border-radius: 4px; margin-bottom: 10px;"></textarea>
+        
+        <div style="margin-bottom: 10px;">
+            <label style="color: white; font-size: 14px; margin-right: 15px;">
+                <input type="radio" name="strategyMode" value="micro" checked> Micro-Steps (Do it right now)
+            </label>
+            <label style="color: white; font-size: 14px;">
+                <input type="radio" name="strategyMode" value="macro"> Macro-Strategy (Long-term roadmap)
+            </label>
+        </div>
+
         <button onclick="generateAIPath()" style="padding: 12px 20px; background: #00ffcc; color: black; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;" id="genBtn">Generate AI Strategy</button>
         <button onclick="clearTasks()" style="padding: 12px 20px; background: #ff3366; color: white; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">Clear</button>
     </div>
@@ -54,15 +64,25 @@
             document.getElementById('loading').style.display = 'block';
             document.getElementById('stepList').innerHTML = '';
 
-            let prompt = `You are an elite tactical assistant for an ADHD builder. Break down this goal into a strict 3-step chronological execution plan: "${goal}". 
-            Format your response strictly as 3 HTML list items (<li>) using this format:
-            <li><b>Step 1 [Immediate Action]:</b> [Specific, tiny first step]</li>
-            <li><b>Step 2 [Environment Setup]:</b> [System setup required]</li>
-            <li><b>Step 3 [Execution Milestone]:</b> [First major measurable output]</li>
-            Do not include markdown backticks or extra conversational filler, output raw HTML list items only.`;
+            let mode = document.querySelector('input[name="strategyMode"]:checked').value;
+            let prompt = "";
+
+            if (mode === 'micro') {
+                prompt = `You are an elite tactical assistant for an ADHD builder. Break down this goal into a strict 3-step chronological execution plan: "${goal}". 
+                Format your response strictly as 3 HTML list items (<li>) using this format:
+                <li><b>Step 1 [Immediate Action]:</b> [Specific, tiny first physical step]</li>
+                <li><b>Step 2 [Environment Setup]:</b> [System setup required]</li>
+                <li><b>Step 3 [Execution Milestone]:</b> [First major measurable output]</li>
+                Do not include markdown backticks or extra conversational filler, output raw HTML list items only.`;
+            } else {
+                prompt = `You are an elite strategic planner. The user wants to achieve this major life goal: "${goal}".
+                Break this down into a highly structured, pragmatic, and realistic multi-phase roadmap.
+                Format your response strictly as HTML list items (<li>) outlining 4 distinct phases (e.g., Phase 1: Foundation, Phase 2: Building, etc.). Under each phase, provide 2 actionable bullet points.
+                Do not include markdown backticks or extra conversational filler, output raw HTML list items only.`;
+            }
 
             try {
-                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`,  {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
