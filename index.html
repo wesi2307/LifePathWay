@@ -73,18 +73,23 @@
                 let data = await response.json();
                 document.getElementById('loading').style.display = 'none';
 
+                if (!response.ok) {
+                    let errorMsg = data.error && data.error.message ? data.error.message : JSON.stringify(data);
+                    document.getElementById('stepList').innerHTML = `<li><b>API Error:</b> ${errorMsg}</li>`;
+                    return;
+                }
+
                 if(data.candidates && data.candidates[0].content) {
                     let aiText = data.candidates[0].content.parts[0].text;
-                    // Clean up markdown wrappers if Gemini includes them
                     aiText = aiText.replace(/```html/g, '').replace(/```/g, '').trim();
                     document.getElementById('stepList').innerHTML = aiText;
                     localStorage.setItem('savedStepsV2', aiText);
                 } else {
-                    document.getElementById('stepList').innerHTML = '<li><b>Error:</b> Failed to parse AI response. Check your API key.</li>';
+                    document.getElementById('stepList').innerHTML = '<li><b>Error:</b> Received empty response structure from API.</li>';
                 }
             } catch (err) {
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('stepList').innerHTML = `<li><b>Network Error:</b> ${err.message}</li>`;
+                document.getElementById('stepList').innerHTML = `<li><b>Network Exception:</b> ${err.message}</li>`;
             }
         }
 
