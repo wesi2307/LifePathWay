@@ -1,43 +1,96 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PathMaker - ADHD Task Engine</title>
+    <title>LifePathMaker v2 - AI Task Engine</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #121212; color: #ffffff; max-width: 600px; margin: auto;">
-    <h2 style="color: #00ffcc;">LifePathMaker v1.1: Break the Paralysis</h2>
-    <p style="color: #aaa; font-size: 14px;">Turn overwhelming tasks into an unignorable 3-step sequence.</p>
+    <h2 style="color: #00ffcc;">LifePathMaker v2: AI Strategic Engine</h2>
+    <p style="color: #aaa; font-size: 14px;">Transform overwhelming ambitions into an executed 3-step tactical roadmap.</p>
     
+    <div style="margin-bottom: 15px; background: #1e1e1e; padding: 10px; border-radius: 4px; border: 1px solid #333;">
+        <label style="font-size: 12px; color: #00ffcc; display: block; margin-bottom: 5px;">Gemini API Key (Stored locally in your browser):</label>
+        <input type="password" id="apiKeyInput" placeholder="Paste your Gemini API key here..." style="width: 100%; padding: 8px; background: #222; color: white; border: 1px solid #444; box-sizing: border-box; border-radius: 4px;">
+        <button onclick="saveApiKey()" style="margin-top: 5px; padding: 6px 12px; background: #444; color: white; font-size: 12px; border: none; border-radius: 4px; cursor: pointer;">Save Key</button>
+    </div>
+
     <div style="margin-bottom: 15px;">
-        <input type="text" id="goalInput" placeholder="Enter an overwhelming task..." style="width: 100%; padding: 12px; background: #222; color: white; border: 1px solid #444; box-sizing: border-box; border-radius: 4px; margin-bottom: 10px;">
-        <button onclick="breakTask()" style="padding: 12px 20px; background: #00ffcc; color: black; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;">Generate Micro-Steps</button>
+        <textarea id="goalInput" rows="3" placeholder="Enter an overwhelming life goal or complex project..." style="width: 100%; padding: 12px; background: #222; color: white; border: 1px solid #444; box-sizing: border-box; border-radius: 4px; margin-bottom: 10px;"></textarea>
+        <button onclick="generateAIPath()" style="padding: 12px 20px; background: #00ffcc; color: black; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;" id="genBtn">Generate AI Strategy</button>
         <button onclick="clearTasks()" style="padding: 12px 20px; background: #ff3366; color: white; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">Clear</button>
     </div>
 
+    <div id="loading" style="display:none; color: #00ffcc; font-style: italic; margin-bottom: 10px;">AI is computing tactical breakdown...</div>
     <ul id="stepList" style="margin-top: 20px; line-height: 1.8; font-size: 16px; padding-left: 20px;"></ul>
 
     <script>
-        // Load saved tasks from browser memory on startup
         window.onload = function() {
-            if(localStorage.getItem('savedSteps')) {
-                document.getElementById('stepList').innerHTML = localStorage.getItem('savedSteps');
+            if(localStorage.getItem('gemini_key')) {
+                document.getElementById('apiKeyInput').value = localStorage.getItem('gemini_key');
+            }
+            if(localStorage.getItem('savedStepsV2')) {
+                document.getElementById('stepList').innerHTML = localStorage.getItem('savedStepsV2');
             }
         };
 
-        function breakTask() {
-            let goal = document.getElementById('goalInput').value;
+        function saveApiKey() {
+            let key = document.getElementById('apiKeyInput').value.trim();
+            if(key) {
+                localStorage.setItem('gemini_key', key);
+                alert('API Key saved securely to your browser storage.');
+            }
+        }
+
+        async function generateAIPath() {
+            let apiKey = localStorage.getItem('gemini_key') || document.getElementById('apiKeyInput').value.trim();
+            let goal = document.getElementById('goalInput').value.trim();
+            
+            if(!apiKey) {
+                alert('Please enter and save your Gemini API key first.');
+                return;
+            }
             if(!goal) return;
-            let steps = `
-                <li style="margin-bottom: 10px;"><b>Step 1:</b> Open the primary tool or website for "${goal}". Do nothing else.</li>
-                <li style="margin-bottom: 10px;"><b>Step 2:</b> Spend exactly 2 minutes setting up the workspace.</li>
-                <li style="margin-bottom: 10px;"><b>Step 3:</b> Execute the absolute smallest first physical action.</li>`;
-            document.getElementById('stepList').innerHTML = steps;
-            localStorage.setItem('savedSteps', steps); // Permanently store in browser cache
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('stepList').innerHTML = '';
+
+            let prompt = `You are an elite tactical assistant for an ADHD builder. Break down this goal into a strict 3-step chronological execution plan: "${goal}". 
+            Format your response strictly as 3 HTML list items (<li>) using this format:
+            <li><b>Step 1 [Immediate Action]:</b> [Specific, tiny first step]</li>
+            <li><b>Step 2 [Environment Setup]:</b> [System setup required]</li>
+            <li><b>Step 3 [Execution Milestone]:</b> [First major measurable output]</li>
+            Do not include markdown backticks or extra conversational filler, output raw HTML list items only.`;
+
+            try {
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+
+                let data = await response.json();
+                document.getElementById('loading').style.display = 'none';
+
+                if(data.candidates && data.candidates[0].content) {
+                    let aiText = data.candidates[0].content.parts[0].text;
+                    // Clean up markdown wrappers if Gemini includes them
+                    aiText = aiText.replace(/```html/g, '').replace(/```/g, '').trim();
+                    document.getElementById('stepList').innerHTML = aiText;
+                    localStorage.setItem('savedStepsV2', aiText);
+                } else {
+                    document.getElementById('stepList').innerHTML = '<li><b>Error:</b> Failed to parse AI response. Check your API key.</li>';
+                }
+            } catch (err) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('stepList').innerHTML = `<li><b>Network Error:</b> ${err.message}</li>`;
+            }
         }
 
         function clearTasks() {
             document.getElementById('stepList').innerHTML = '';
-            localStorage.removeItem('savedSteps');
+            localStorage.removeItem('savedStepsV2');
             document.getElementById('goalInput').value = '';
         }
     </script>
