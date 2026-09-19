@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>LifePathMaker v3.5 - SaaS Freemium Engine</title>
+    <title>Elite Life Architecture - Proprietary Engine</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         @media print {
@@ -22,15 +22,17 @@
 
         /* Paywall Modal Styling */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .paywall-box { background: #161b22; padding: 30px; border-radius: 12px; border: 1px solid #30363d; max-width: 600px; width: 90%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .paywall-box { background: #161b22; padding: 30px; border-radius: 12px; border: 1px solid #30363d; max-width: 700px; width: 95%; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.7); }
         .tier-container { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
-        .tier-card { flex: 1; min-width: 250px; background: #0d1117; padding: 20px; border-radius: 8px; border: 1px solid #30363d; text-align: left; }
-        .tier-card.featured { border-color: #00ffcc; box-shadow: 0 0 15px rgba(0, 255, 204, 0.2); }
-        .checkout-btn { width: 100%; padding: 12px; margin-top: 15px; background: #238636; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
-        .checkout-btn.upsell { background: #1f6feb; }
+        .tier-card { flex: 1; min-width: 260px; background: #0d1117; padding: 24px; border-radius: 8px; border: 1px solid #30363d; text-align: left; position: relative; }
+        .tier-card.featured { border-color: #00ffcc; box-shadow: 0 0 20px rgba(0, 255, 204, 0.15); transform: scale(1.02); }
+        .checkout-btn { width: 100%; padding: 14px; margin-top: 15px; background: #238636; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; font-size: 15px; transition: background 0.2s; }
+        .checkout-btn:hover { background: #2ea043; }
+        .checkout-btn.upsell { background: linear-gradient(135deg, #1f6feb, #388bfd); }
+        .checkout-btn.upsell:hover { opacity: 0.9; }
         
         /* Premium Unlock Button */
-        .premium-lock-btn { display: none; width: 100%; padding: 18px; margin-top: 30px; background: linear-gradient(135deg, #238636, #2ea043); color: white; font-weight: bold; font-size: 18px; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(35, 134, 54, 0.4); text-transform: uppercase; letter-spacing: 1px; transition: transform 0.2s; }
+        .premium-lock-btn { display: none; width: 100%; padding: 20px; margin-top: 30px; background: linear-gradient(135deg, #238636, #2ea043); color: white; font-weight: bold; font-size: 18px; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(35, 134, 54, 0.4); text-transform: uppercase; letter-spacing: 1px; transition: transform 0.2s; }
         .premium-lock-btn:hover { transform: scale(1.02); }
     </style>
 </head>
@@ -39,42 +41,51 @@
     <!-- MONETIZATION PAYWALL MODAL -->
     <div id="paywallModal" class="modal-overlay">
         <div class="paywall-box">
-            <h2 style="color: #00ffcc; margin-top: 0;">Unlock Your Master Blueprint</h2>
-            <p style="color: #8b949e; font-size: 15px;">The AI has successfully computed the exact, granular micro-steps required to execute your Life Path. Secure your access now.</p>
+            <h2 style="color: #00ffcc; margin-top: 0; font-size: 28px;">Unlock Your Elite Execution Engine</h2>
+            <p style="color: #8b949e; font-size: 16px; margin-bottom: 25px;">The architecture is built. The micro-steps are computed. Choose your level of access and step into the reality you just designed.</p>
             
             <div class="tier-container">
+                <!-- Core Tier -->
                 <div class="tier-card">
-                    <h3 style="color: #e6edf3; margin-top: 0;">Core Life Path</h3>
-                    <h2 style="color: #fff; margin: 10px 0;">$99 <span style="font-size: 12px; color: #8b949e; font-weight: normal;">One-Time</span></h2>
-                    <ul style="padding-left: 20px; font-size: 13px; color: #c9d1d9;">
+                    <h3 style="color: #e6edf3; margin-top: 0; font-size: 20px;">Core Execution</h3>
+                    <h2 style="color: #fff; margin: 10px 0; font-size: 32px;">$99 <span style="font-size: 14px; color: #8b949e; font-weight: normal;">One-Time</span></h2>
+                    <ul style="padding-left: 20px; font-size: 14px; color: #c9d1d9; line-height: 1.8;">
                         <li>Exhaustive Step-by-Step Blueprint</li>
-                        <li>All Micro-Steps Unlocked</li>
+                        <li>All Micro-Steps Unlocked Instantly</li>
                         <li>Downloadable PDF Export</li>
                     </ul>
-                    <button class="checkout-btn" onclick="executePaidGeneration()">Unlock Blueprint (Dev Bypass)</button>
+                    <button class="checkout-btn" onclick="executePaidGeneration()">Unlock Your Blueprint</button>
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 6px; margin-top: 15px; border: 1px solid #30363d;">
+                        <p style="font-size: 11px; color: #8b949e; text-align: left; margin: 0; line-height: 1.4;">
+                            🛡️ <b>30-Day Execution Guarantee:</b> If you follow the micro-steps and don't build undeniable momentum, we refund the system. Zero risk.
+                        </p>
+                    </div>
                 </div>
 
+                <!-- Elite Tier -->
                 <div class="tier-card featured">
-                    <div style="background: #00ffcc; color: #000; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 12px; display: inline-block; margin-bottom: 8px;">RECOMMENDED</div>
-                    <h3 style="color: #e6edf3; margin-top: 0;">PathMaker Elite</h3>
-                    <h2 style="color: #fff; margin: 10px 0;">$149 <span style="font-size: 12px; color: #8b949e; font-weight: normal;">/ Year</span></h2>
-                    <ul style="padding-left: 20px; font-size: 13px; color: #c9d1d9;">
-                        <li><b>Everything in Core</b></li>
-                        <li><b>Quarterly Path Recalibration</b></li>
-                        <li>Unlimited Milestone Tweaks</li>
+                    <div style="background: #00ffcc; color: #000; font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 12px; position: absolute; top: -12px; right: 20px; box-shadow: 0 2px 10px rgba(0,255,204,0.3);">RECOMMENDED</div>
+                    <h3 style="color: #e6edf3; margin-top: 0; font-size: 20px;">Elite Mastery</h3>
+                    <h2 style="color: #fff; margin: 10px 0 0 0; font-size: 32px;">$149 <span style="font-size: 14px; color: #8b949e; font-weight: normal;">/ Year</span></h2>
+                    <p style="font-size: 13px; color: #00ffcc; margin: 4px 0 15px 0; font-weight: 600;">(Or $29 / Month. Save 57% Annually)</p>
+                    <ul style="padding-left: 20px; font-size: 14px; color: #c9d1d9; line-height: 1.8;">
+                        <li><b>Everything in Core Execution</b></li>
+                        <li><b>Quarterly Path Recalibration:</b> Dynamic updates to your micro-steps as your life variables evolve.</li>
+                        <li>Unlimited Priority Adjustments</li>
                     </ul>
-                    <button class="checkout-btn upsell" onclick="executePaidGeneration()">Become Elite (Dev Bypass)</button>
+                    <button class="checkout-btn upsell" onclick="executePaidGeneration()">Become Elite</button>
+                    <p style="font-size: 12px; color: #8b949e; text-align: center; margin: 15px 0 0 0;">Cancel anytime. Own your evolution.</p>
                 </div>
             </div>
             
-            <button onclick="document.getElementById('paywallModal').style.display = 'none';" style="margin-top: 20px; background: transparent; border: none; color: #8b949e; font-size: 12px; text-decoration: underline; cursor: pointer;">Cancel</button>
+            <button onclick="document.getElementById('paywallModal').style.display = 'none';" style="margin-top: 25px; background: transparent; border: none; color: #8b949e; font-size: 13px; text-decoration: underline; cursor: pointer;">Return to Outline</button>
         </div>
     </div>
 
     <div class="app-container">
         <!-- SIDEBAR -->
         <aside class="sidebar no-print">
-            <h3 style="color: #00ffcc; font-size: 16px; margin-top: 0; border-bottom: 1px solid #30363d; padding-bottom: 10px;">Path History (Last 10)</h3>
+            <h3 style="color: #00ffcc; font-size: 16px; margin-top: 0; border-bottom: 1px solid #30363d; padding-bottom: 10px;">Path History</h3>
             <div id="historyList"><span style='color:#8b949e; font-size: 12px;'>No history yet.</span></div>
             <button onclick="clearHistory()" style="margin-top: 15px; width: 100%; padding: 8px; background: transparent; color: #f85149; border: 1px solid #f85149; border-radius: 4px; cursor: pointer; font-size: 12px;">Clear History</button>
         </aside>
@@ -82,56 +93,57 @@
         <!-- MAIN APP -->
         <main class="main-content">
             <header class="no-print" style="border-bottom: 1px solid #30363d; padding-bottom: 16px; margin-bottom: 24px;">
-                <h1 style="color: #00ffcc; font-size: 26px; margin: 0 0 8px 0;">LifePathMaker: Universal Engine</h1>
-                <p style="color: #8b949e; font-size: 14px; margin: 0;">AI-Architected. Multi-Dimensional. High-Probability Execution.</p>
+                <h1 style="color: #00ffcc; font-size: 26px; margin: 0 0 8px 0;">Elite Life Architecture</h1>
+                <p style="color: #8b949e; font-size: 14px; margin: 0;">Proprietary. Multi-Dimensional. High-Probability Execution.</p>
             </header>
             
+            <!-- ADMIN KEY INPUT (Hidden from normal users eventually) -->
             <section class="no-print" style="margin-bottom: 20px; background: #161b22; padding: 14px; border-radius: 8px; border: 1px solid #30363d;">
-                <label style="font-size: 12px; color: #58a6ff; display: block; margin-bottom: 6px; font-weight: 600;">Gemini API Key (Admin Only):</label>
+                <label style="font-size: 12px; color: #58a6ff; display: block; margin-bottom: 6px; font-weight: 600;">System Admin Key:</label>
                 <div style="display: flex; gap: 8px;">
-                    <input type="password" id="apiKeyInput" placeholder="Paste your API key here..." style="flex: 1; padding: 10px; background: #0d1117; color: white; border: 1px solid #30363d; border-radius: 6px; font-size: 14px;">
-                    <button onclick="saveApiKey()" style="padding: 10px 18px; background: #21262d; color: #c9d1d9; font-size: 13px; font-weight: 600; border: 1px solid #30363d; border-radius: 6px; cursor: pointer;">Save Key</button>
+                    <input type="password" id="apiKeyInput" placeholder="Paste authentication key..." style="flex: 1; padding: 10px; background: #0d1117; color: white; border: 1px solid #30363d; border-radius: 6px; font-size: 14px;">
+                    <button onclick="saveApiKey()" style="padding: 10px 18px; background: #21262d; color: #c9d1d9; font-size: 13px; font-weight: 600; border: 1px solid #30363d; border-radius: 6px; cursor: pointer;">Secure Key</button>
                 </div>
             </section>
 
             <section class="no-print" style="margin-bottom: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <label style="font-size: 13px; color: #c9d1d9; font-weight: 600;">Define Your Life Path Vision:</label>
-                    <button id="micBtn" onclick="toggleVoice()" style="padding: 6px 12px; background: #21262d; color: #58a6ff; font-weight: 600; border: 1px solid #58a6ff; border-radius: 12px; cursor: pointer; font-size: 12px;">🎤 Dictate Vision</button>
+                    <label style="font-size: 14px; color: #c9d1d9; font-weight: 600;">Define Your Ultimate Reality:</label>
+                    <button id="micBtn" onclick="toggleVoice()" style="padding: 6px 12px; background: #21262d; color: #58a6ff; font-weight: 600; border: 1px solid #58a6ff; border-radius: 12px; cursor: pointer; font-size: 12px; transition: 0.2s;">🎤 Dictate Vision</button>
                 </div>
-                <textarea id="goalInput" rows="5" placeholder="What is your ultimate life goal? Be specific about the wealth, health, and lifestyle you want to achieve..." style="width: 100%; padding: 12px; background: #161b22; color: #e6edf3; border: 1px solid #30363d; border-radius: 8px; font-size: 14px; margin-bottom: 12px;"></textarea>
+                <textarea id="goalInput" rows="5" placeholder="Be specific. What does the highest-fulfillment version of your wealth, health, and lifestyle look like? The system will architect the bridge to get there..." style="width: 100%; padding: 16px; background: #161b22; color: #e6edf3; border: 1px solid #30363d; border-radius: 8px; font-size: 15px; margin-bottom: 12px; line-height: 1.5;"></textarea>
                 
-                <div style="background: #161b22; padding: 12px; border-radius: 8px; border: 1px solid #30363d; margin-bottom: 16px;">
-                    <span style="font-size: 13px; color: #8b949e; display: block; margin-bottom: 8px; font-weight: 600;">Priority Dimensions:</span>
+                <div style="background: #161b22; padding: 16px; border-radius: 8px; border: 1px solid #30363d; margin-bottom: 16px;">
+                    <span style="font-size: 13px; color: #8b949e; display: block; margin-bottom: 10px; font-weight: 600;">Focus Dimensions (Select your priorities):</span>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <label style="color: #e6edf3; font-size: 13px; cursor: pointer; background: #21262d; padding: 4px 10px; border-radius: 12px; border: 1px solid #30363d;"><input type="checkbox" class="dim-tag" value="Wealth & Finance"> Wealth</label>
-                        <label style="color: #e6edf3; font-size: 13px; cursor: pointer; background: #21262d; padding: 4px 10px; border-radius: 12px; border: 1px solid #30363d;"><input type="checkbox" class="dim-tag" value="Physical Health & Vitality"> Health</label>
-                        <label style="color: #e6edf3; font-size: 13px; cursor: pointer; background: #21262d; padding: 4px 10px; border-radius: 12px; border: 1px solid #30363d;"><input type="checkbox" class="dim-tag" value="Relationships & Network"> Relationships</label>
-                        <label style="color: #e6edf3; font-size: 13px; cursor: pointer; background: #21262d; padding: 4px 10px; border-radius: 12px; border: 1px solid #30363d;"><input type="checkbox" class="dim-tag" value="Creative Ventures"> Creative</label>
+                        <label style="color: #e6edf3; font-size: 13px; cursor: pointer; background: #21262d; padding: 6px 12px; border-radius: 12px; border: 1px solid #30363d; transition: 0.2s;"><input type="checkbox" class="dim-tag" value="Wealth & Financial Independence"> Wealth</label>
+                        <label style="color: #e6edf3; font-size: 13px; cursor: pointer; background: #21262d; padding: 6px 12px; border-radius: 12px; border: 1px solid #30363d; transition: 0.2s;"><input type="checkbox" class="dim-tag" value="Physical Health & Peak Vitality"> Health</label>
+                        <label style="color: #e6edf3; font-size: 13px; cursor: pointer; background: #21262d; padding: 6px 12px; border-radius: 12px; border: 1px solid #30363d; transition: 0.2s;"><input type="checkbox" class="dim-tag" value="Deep Relationships & Network"> Relationships</label>
+                        <label style="color: #e6edf3; font-size: 13px; cursor: pointer; background: #21262d; padding: 6px 12px; border-radius: 12px; border: 1px solid #30363d; transition: 0.2s;"><input type="checkbox" class="dim-tag" value="Business & Creative Ventures"> Creative</label>
                     </div>
                 </div>
 
-                <div style="background: #161b22; padding: 12px; border-radius: 8px; border: 1px solid #30363d; margin-bottom: 16px;">
-                    <span style="font-size: 13px; color: #8b949e; display: block; margin-bottom: 8px; font-weight: 600;">Execution Horizon:</span>
+                <div style="background: #161b22; padding: 16px; border-radius: 8px; border: 1px solid #30363d; margin-bottom: 20px;">
+                    <span style="font-size: 13px; color: #8b949e; display: block; margin-bottom: 10px; font-weight: 600;">Execution Horizon:</span>
                     <label style="color: #e6edf3; font-size: 14px; margin-right: 20px; cursor: pointer;">
-                        <input type="radio" name="strategyMode" value="micro" checked> <b>Micro-Path</b> (Next 24 Hours)
+                        <input type="radio" name="strategyMode" value="micro" checked> <b>Micro-Path</b> (Immediate 24-48 Hours)
                     </label>
                     <label style="color: #e6edf3; font-size: 14px; cursor: pointer;">
                         <input type="radio" name="strategyMode" value="macro"> <b>Macro-Path</b> (Master Blueprint)
                     </label>
                 </div>
 
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button onclick="generateFreeOutline()" style="padding: 12px 24px; background: #1f6feb; color: #ffffff; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">Generate Free Blueprint Outline</button>
-                    <button onclick="clearOutput()" style="padding: 12px 18px; background: #21262d; color: #f85149; font-weight: 600; border: 1px solid #30363d; border-radius: 6px; cursor: pointer; font-size: 14px;">Clear</button>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <button onclick="generateFreeOutline()" style="padding: 14px 28px; background: #1f6feb; color: #ffffff; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; font-size: 15px; box-shadow: 0 4px 12px rgba(31, 111, 235, 0.3); transition: 0.2s;">Architect Free Blueprint Outline</button>
+                    <button onclick="clearOutput()" style="padding: 14px 20px; background: #21262d; color: #f85149; font-weight: 600; border: 1px solid #30363d; border-radius: 6px; cursor: pointer; font-size: 14px;">Clear Target</button>
                 </div>
             </section>
 
-            <div id="loading" class="no-print" style="display:none; color: #58a6ff; font-style: italic; margin: 16px 0;">Architecting your strategy...</div>
-            <main id="outputContainer" style="margin-top: 24px; color: #c9d1d9;"></main>
+            <div id="loading" class="no-print" style="display:none; color: #58a6ff; font-style: italic; margin: 16px 0; font-size: 15px;">Initializing proprietary execution frameworks...</div>
+            <main id="outputContainer" style="margin-top: 24px; color: #c9d1d9; font-size: 16px;"></main>
             
-            <!-- THE HOOK BUTTON -->
-            <button id="unlockBtn" class="premium-lock-btn no-print" onclick="document.getElementById('paywallModal').style.display = 'flex';">🔒 Unlock Full Micro-Step Execution ($99)</button>
+            <!-- THE PREMIUM HOOK BUTTON -->
+            <button id="unlockBtn" class="premium-lock-btn no-print" onclick="document.getElementById('paywallModal').style.display = 'flex';">🔒 Unlock Full Micro-Step Execution Sequence</button>
         </main>
     </div>
 
@@ -147,14 +159,14 @@
 
         function saveApiKey() {
             let key = document.getElementById('apiKeyInput').value.trim();
-            if(key) { localStorage.setItem('gemini_key', key); alert('API Key saved.'); }
+            if(key) { localStorage.setItem('gemini_key', key); alert('System Key Secured.'); }
         }
 
-        // --- STEP 1: GENERATE FREE MARKETING OUTLINE (THE HOOK) ---
+        // --- STEP 1: GENERATE EMOTIONAL FREEMIUM HOOK ---
         async function generateFreeOutline() {
             let apiKey = localStorage.getItem('gemini_key') || document.getElementById('apiKeyInput').value.trim();
             let goal = document.getElementById('goalInput').value.trim();
-            if(!apiKey) { alert('Save API key first.'); return; }
+            if(!apiKey) { alert('Secure API key first.'); return; }
             if(!goal) { alert('Define your vision first.'); return; }
 
             document.getElementById('loading').style.display = 'block';
@@ -162,21 +174,29 @@
             document.getElementById('unlockBtn').style.display = 'none';
 
             let checkedTags = Array.from(document.querySelectorAll('.dim-tag:checked')).map(cb => cb.value);
-            let tagContext = checkedTags.length > 0 ? `Explicitly mention these dimensions: ${checkedTags.join(', ')}.` : "";
+            let tagContext = checkedTags.length > 0 ? `Explicitly target these dimensions: ${checkedTags.join(', ')}.` : "";
 
-            let prompt = `You are an elite software copywriter and life architect. The user wants to achieve this vision: "${goal}". ${tagContext}
-            Generate a powerful, high-converting "Free Teaser Outline" in HTML (no markdown).
-            Structure:
-            <h2>Your Life Path Architecture is Ready</h2>
-            <p>[A powerful paragraph validating their vision and painting a picture of what their life will look like when they execute it].</p>
-            <h3>The 3 Core Phases of Your Path:</h3>
-            <ul><li>[Phase 1 Title & Brief Summary - NO MICRO STEPS]</li><li>[Phase 2 Title & Brief Summary]</li><li>[Phase 3 Title & Brief Summary]</li></ul>
-            <p><b>Status:</b> The AI has successfully computed the exact, granular, day-by-day micro-steps required to guarantee this outcome. The execution engine is locked and ready for deployment.</p>`;
+            let prompt = `You are an elite master copywriter and behavioral psychology expert. The user wants to achieve this vision: "${goal}". ${tagContext}
+            Generate a powerful, high-converting, deeply emotional "Free Teaser Outline" in HTML (no markdown).
+            CRITICAL: Do NOT mention "AI" or "artificial intelligence". Frame the output as coming from our proprietary, proven Elite Life Architecture system.
+            
+            Structure exactly like this:
+            <h2 style="color: #00ffcc;">Your Elite Life Architecture is Ready</h2>
+            <p>[Write a deeply emotional, 2-paragraph validation of their vision. Emphasize how much more fulfilling, secure, and powerful their life will be when they execute this. Connect with the deep human desire for purpose, stability, and realizing their ultimate potential. Make them feel deeply understood and capable.]</p>
+            <h3 style="border-bottom: 1px solid #30363d; padding-bottom: 8px;">The 3 Core Phases of Your Transformation:</h3>
+            <ul>
+                <li style="margin-bottom: 12px;"><b>[Phase 1 Title]:</b> [Brief emotional summary of the outcome - DO NOT REVEAL THE ACTUAL MICRO STEPS]</li>
+                <li style="margin-bottom: 12px;"><b>[Phase 2 Title]:</b> [Brief emotional summary of the outcome - DO NOT REVEAL THE ACTUAL MICRO STEPS]</li>
+                <li style="margin-bottom: 12px;"><b>[Phase 3 Title]:</b> [Brief emotional summary of the outcome - DO NOT REVEAL THE ACTUAL MICRO STEPS]</li>
+            </ul>
+            <div style="background: #161b22; padding: 15px; border-left: 4px solid #00ffcc; margin-top: 20px;">
+                <p style="margin: 0;"><b>System Status:</b> Our proprietary LifePath blueprinting system has successfully compiled the exact, high-probability micro-steps required to guarantee this outcome. This sequence is built on proven, highest-percentage behavioral frameworks customized specifically for your exact scenario. The execution engine is locked and ready for deployment.</p>
+            </div>`;
 
             try {
                 let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { maxOutputTokens: 2000, temperature: 0.7 } })
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { maxOutputTokens: 2500, temperature: 0.75 } })
                 });
 
                 let data = await response.json();
@@ -185,11 +205,11 @@
                 if(data.candidates) {
                     let aiText = data.candidates[0].content.parts[0].text.replace(/```html/g, '').replace(/```/g, '').trim();
                     document.getElementById('outputContainer').innerHTML = aiText;
-                    document.getElementById('unlockBtn').style.display = 'block'; // Show the big green unlock button
+                    document.getElementById('unlockBtn').style.display = 'block'; 
                 }
             } catch (err) {
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('outputContainer').innerHTML = `<p style="color:#f85149;">Error: ${err.message}</p>`;
+                document.getElementById('outputContainer').innerHTML = `<p style="color:#f85149;">System Error: ${err.message}</p>`;
             }
         }
 
@@ -198,7 +218,7 @@
             document.getElementById('paywallModal').style.display = 'none';
             document.getElementById('unlockBtn').style.display = 'none';
             document.getElementById('loading').style.display = 'block';
-            document.getElementById('outputContainer').innerHTML = '<h3 style="color:#00ffcc;">Payment Verified. Compiling Deep Execution Engine...</h3>';
+            document.getElementById('outputContainer').innerHTML = '<h3 style="color:#00ffcc; text-align:center;">Access Verified. Compiling Proprietary Execution Engine...</h3>';
 
             let apiKey = localStorage.getItem('gemini_key') || document.getElementById('apiKeyInput').value.trim();
             let goal = document.getElementById('goalInput').value.trim();
@@ -207,8 +227,8 @@
             let tagContext = checkedTags.length > 0 ? `\n\nCRITICAL OVERRIDE: Focus heavily on these dimensions: ${checkedTags.join(', ')}.` : "";
             
             let prompt = mode === 'micro' ? 
-                `You are a universal strategic life-architect. Goal: "${goal}". ${tagContext}\nProvide a practical sequence of micro-steps for immediate execution. Format in HTML. Structure: 1. Immediate Tasks (Next 24 Hrs), 2. Habit Sequence (Days 2-14), 3. Verification (Days 15-30).` : 
-                `You are a universal master life-architect. Vision: "${goal}". ${tagContext}\nConstruct an exhaustive Life Path Blueprint. Format in HTML. Structure: 1. Foundation & Systems, 2. Execution Micro-Milestones, 3. Long-Horizon Mastery.`;
+                `You are a proprietary Elite Life Architecture system. Goal: "${goal}". ${tagContext}\nProvide a proven, highest-percentage sequence of micro-steps for immediate execution. Format in HTML. Structure: 1. Immediate Tasks (Next 24 Hrs), 2. Habit Sequence (Days 2-14), 3. Verification (Days 15-30). Do not mention AI.` : 
+                `You are a proprietary Elite Life Architecture system. Vision: "${goal}". ${tagContext}\nConstruct an exhaustive, guaranteed Life Path Blueprint. Format in HTML. Structure: 1. Foundation & Systems, 2. Execution Micro-Milestones, 3. Long-Horizon Mastery. Do not mention AI.`;
 
             try {
                 let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`, {
@@ -222,15 +242,14 @@
                 if(data.candidates) {
                     let aiText = data.candidates[0].content.parts[0].text.replace(/```html/g, '').replace(/```/g, '').trim();
                     
-                    // Add the print button directly to the generated output for easy export
-                    aiText = `<button class="no-print" onclick="window.print()" style="margin-bottom: 20px; padding: 10px 15px; background: #00ffcc; color: #000; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;">🖨️ Export Blueprint to PDF</button>` + aiText;
+                    aiText = `<div class="no-print" style="text-align: right; margin-bottom: 20px;"><button onclick="window.print()" style="padding: 12px 20px; background: #00ffcc; color: #000; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,255,204,0.3);">🖨️ Export Blueprint to PDF</button></div>` + aiText;
                     
                     document.getElementById('outputContainer').innerHTML = aiText;
                     saveToHistory(goal, aiText);
                 }
             } catch (err) {
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('outputContainer').innerHTML = `<p style="color:#f85149;">Error: ${err.message}</p>`;
+                document.getElementById('outputContainer').innerHTML = `<p style="color:#f85149;">System Error: ${err.message}</p>`;
             }
         }
 
@@ -247,16 +266,16 @@
             let html = historyBank.map((item, idx) => 
                 `<div class="history-item" onclick="loadHistory(${idx})">📄 ${item.title}</div>`
             ).join('');
-            document.getElementById('historyList').innerHTML = html || "<span style='color:#8b949e; font-size: 12px;'>No history yet.</span>";
+            document.getElementById('historyList').innerHTML = html || "<span style='color:#8b949e; font-size: 12px;'>No records found.</span>";
         }
 
         function loadHistory(index) {
             document.getElementById('outputContainer').innerHTML = historyBank[index].data;
-            document.getElementById('unlockBtn').style.display = 'none'; // Hide unlock button when viewing old paid paths
+            document.getElementById('unlockBtn').style.display = 'none';
         }
 
         function clearHistory() {
-            if(confirm("Wipe all saved paths?")) { historyBank = []; localStorage.removeItem('pathHistory'); renderHistory(); clearOutput(); }
+            if(confirm("Purge all saved architectures?")) { historyBank = []; localStorage.removeItem('pathHistory'); renderHistory(); clearOutput(); }
         }
 
         function clearOutput() {
@@ -268,7 +287,7 @@
         // --- VOICE LOGIC ---
         function toggleVoice() {
             let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) { alert("Voice dictation requires Google Chrome, Edge, or Samsung Internet."); return; }
+            if (!SpeechRecognition) { alert("Hardware dictation requires modern Chromium browsers."); return; }
             if (!recognition) {
                 recognition = new SpeechRecognition(); recognition.continuous = true; recognition.interimResults = true;
                 recognition.onresult = (e) => {
