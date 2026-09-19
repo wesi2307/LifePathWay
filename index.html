@@ -1,122 +1,287 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>LifePathMaker v2.1 - AI Strategic Engine</title>
+    <meta charset="UTF-8">
+    <title>LifePathMaker v3.5 - SaaS Freemium Engine</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body style="font-family: Arial, sans-serif; padding: 20px; background-color: #121212; color: #ffffff; max-width: 600px; margin: auto;">
-    <h2 style="color: #00ffcc;">LifePathMaker v2.1: AI Strategic Engine</h2>
-    <p style="color: #aaa; font-size: 14px;">Transform overwhelming ambitions into executed tactical roadmaps.</p>
-    
-    <div style="margin-bottom: 15px; background: #1e1e1e; padding: 10px; border-radius: 4px; border: 1px solid #333;">
-        <label style="font-size: 12px; color: #00ffcc; display: block; margin-bottom: 5px;">Gemini API Key (Stored locally in your browser):</label>
-        <input type="password" id="apiKeyInput" placeholder="Paste your Gemini API key here..." style="width: 100%; padding: 8px; background: #222; color: white; border: 1px solid #444; box-sizing: border-box; border-radius: 4px;">
-        <button onclick="saveApiKey()" style="margin-top: 5px; padding: 6px 12px; background: #444; color: white; font-size: 12px; border: none; border-radius: 4px; cursor: pointer;">Save Key</button>
-    </div>
-
-    <div style="margin-bottom: 15px;">
-        <textarea id="goalInput" rows="4" placeholder="Enter an overwhelming life goal or complex project..." style="width: 100%; padding: 12px; background: #222; color: white; border: 1px solid #444; box-sizing: border-box; border-radius: 4px; margin-bottom: 10px;"></textarea>
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { background-color: #ffffff !important; color: #000000 !important; }
+            #outputContainer { color: #000000 !important; }
+            h1, h2, h3, h4 { color: #000000 !important; }
+        }
+        * { box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #0f1117; color: #e6edf3; margin: 0; padding: 20px; line-height: 1.6; }
+        .app-container { display: flex; gap: 20px; flex-wrap: wrap; max-width: 1200px; margin: auto; }
+        .sidebar { flex: 1; min-width: 250px; max-width: 300px; background: #161b22; padding: 16px; border-radius: 8px; border: 1px solid #30363d; height: fit-content; }
+        .main-content { flex: 3; min-width: 320px; }
         
-        <div style="margin-bottom: 10px;">
-            <label style="color: white; font-size: 14px; margin-right: 15px;">
-                <input type="radio" name="strategyMode" value="micro" checked> Micro-Steps (Do it right now)
-            </label>
-            <label style="color: white; font-size: 14px;">
-                <input type="radio" name="strategyMode" value="macro"> Macro-Strategy (Long-term roadmap)
-            </label>
-        </div>
+        .history-item { padding: 10px; background: #0d1117; margin-bottom: 8px; border-radius: 6px; cursor: pointer; font-size: 13px; border: 1px solid #30363d; transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .history-item:hover { border-color: #58a6ff; }
 
-        <button onclick="generateAIPath()" style="padding: 12px 20px; background: #00ffcc; color: black; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;" id="genBtn">Generate AI Strategy</button>
-        <button onclick="clearTasks()" style="padding: 12px 20px; background: #ff3366; color: white; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">Clear</button>
+        /* Paywall Modal Styling */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .paywall-box { background: #161b22; padding: 30px; border-radius: 12px; border: 1px solid #30363d; max-width: 600px; width: 90%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .tier-container { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+        .tier-card { flex: 1; min-width: 250px; background: #0d1117; padding: 20px; border-radius: 8px; border: 1px solid #30363d; text-align: left; }
+        .tier-card.featured { border-color: #00ffcc; box-shadow: 0 0 15px rgba(0, 255, 204, 0.2); }
+        .checkout-btn { width: 100%; padding: 12px; margin-top: 15px; background: #238636; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
+        .checkout-btn.upsell { background: #1f6feb; }
+        
+        /* Premium Unlock Button */
+        .premium-lock-btn { display: none; width: 100%; padding: 18px; margin-top: 30px; background: linear-gradient(135deg, #238636, #2ea043); color: white; font-weight: bold; font-size: 18px; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(35, 134, 54, 0.4); text-transform: uppercase; letter-spacing: 1px; transition: transform 0.2s; }
+        .premium-lock-btn:hover { transform: scale(1.02); }
+    </style>
+</head>
+<body>
+
+    <!-- MONETIZATION PAYWALL MODAL -->
+    <div id="paywallModal" class="modal-overlay">
+        <div class="paywall-box">
+            <h2 style="color: #00ffcc; margin-top: 0;">Unlock Your Master Blueprint</h2>
+            <p style="color: #8b949e; font-size: 15px;">The AI has successfully computed the exact, granular micro-steps required to execute your Life Path. Secure your access now.</p>
+            
+            <div class="tier-container">
+                <div class="tier-card">
+                    <h3 style="color: #e6edf3; margin-top: 0;">Core Life Path</h3>
+                    <h2 style="color: #fff; margin: 10px 0;">$99 <span style="font-size: 12px; color: #8b949e; font-weight: normal;">One-Time</span></h2>
+                    <ul style="padding-left: 20px; font-size: 13px; color: #c9d1d9;">
+                        <li>Exhaustive Step-by-Step Blueprint</li>
+                        <li>All Micro-Steps Unlocked</li>
+                        <li>Downloadable PDF Export</li>
+                    </ul>
+                    <button class="checkout-btn" onclick="executePaidGeneration()">Unlock Blueprint (Dev Bypass)</button>
+                </div>
+
+                <div class="tier-card featured">
+                    <div style="background: #00ffcc; color: #000; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 12px; display: inline-block; margin-bottom: 8px;">RECOMMENDED</div>
+                    <h3 style="color: #e6edf3; margin-top: 0;">PathMaker Elite</h3>
+                    <h2 style="color: #fff; margin: 10px 0;">$149 <span style="font-size: 12px; color: #8b949e; font-weight: normal;">/ Year</span></h2>
+                    <ul style="padding-left: 20px; font-size: 13px; color: #c9d1d9;">
+                        <li><b>Everything in Core</b></li>
+                        <li><b>Quarterly Path Recalibration</b></li>
+                        <li>Unlimited Milestone Tweaks</li>
+                    </ul>
+                    <button class="checkout-btn upsell" onclick="executePaidGeneration()">Become Elite (Dev Bypass)</button>
+                </div>
+            </div>
+            
+            <button onclick="document.getElementById('paywallModal').style.display = 'none';" style="margin-top: 20px; background: transparent; border: none; color: #8b949e; font-size: 12px; text-decoration: underline; cursor: pointer;">Cancel</button>
+        </div>
     </div>
 
-    <div id="loading" style="display:none; color: #00ffcc; font-style: italic; margin-bottom: 10px;">AI is computing tactical breakdown...</div>
-    <ul id="stepList" style="margin-top: 20px; line-height: 1.8; font-size: 16px; padding-left: 20px;"></ul>
+    <div class="app-container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar no-print">
+            <h3 style="color: #00ffcc; font-size: 16px; margin-top: 0; border-bottom: 1px solid #30363d; padding-bottom: 10px;">Path History (Last 10)</h3>
+            <div id="historyList"><span style='color:#8b949e; font-size: 12px;'>No history yet.</span></div>
+            <button onclick="clearHistory()" style="margin-top: 15px; width: 100%; padding: 8px; background: transparent; color: #f85149; border: 1px solid #f85149; border-radius: 4px; cursor: pointer; font-size: 12px;">Clear History</button>
+        </aside>
+
+        <!-- MAIN APP -->
+        <main class="main-content">
+            <header class="no-print" style="border-bottom: 1px solid #30363d; padding-bottom: 16px; margin-bottom: 24px;">
+                <h1 style="color: #00ffcc; font-size: 26px; margin: 0 0 8px 0;">LifePathMaker: Universal Engine</h1>
+                <p style="color: #8b949e; font-size: 14px; margin: 0;">AI-Architected. Multi-Dimensional. High-Probability Execution.</p>
+            </header>
+            
+            <section class="no-print" style="margin-bottom: 20px; background: #161b22; padding: 14px; border-radius: 8px; border: 1px solid #30363d;">
+                <label style="font-size: 12px; color: #58a6ff; display: block; margin-bottom: 6px; font-weight: 600;">Gemini API Key (Admin Only):</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="password" id="apiKeyInput" placeholder="Paste your API key here..." style="flex: 1; padding: 10px; background: #0d1117; color: white; border: 1px solid #30363d; border-radius: 6px; font-size: 14px;">
+                    <button onclick="saveApiKey()" style="padding: 10px 18px; background: #21262d; color: #c9d1d9; font-size: 13px; font-weight: 600; border: 1px solid #30363d; border-radius: 6px; cursor: pointer;">Save Key</button>
+                </div>
+            </section>
+
+            <section class="no-print" style="margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <label style="font-size: 13px; color: #c9d1d9; font-weight: 600;">Define Your Life Path Vision:</label>
+                    <button id="micBtn" onclick="toggleVoice()" style="padding: 6px 12px; background: #21262d; color: #58a6ff; font-weight: 600; border: 1px solid #58a6ff; border-radius: 12px; cursor: pointer; font-size: 12px;">🎤 Dictate Vision</button>
+                </div>
+                <textarea id="goalInput" rows="5" placeholder="What is your ultimate life goal? Be specific about the wealth, health, and lifestyle you want to achieve..." style="width: 100%; padding: 12px; background: #161b22; color: #e6edf3; border: 1px solid #30363d; border-radius: 8px; font-size: 14px; margin-bottom: 12px;"></textarea>
+                
+                <div style="background: #161b22; padding: 12px; border-radius: 8px; border: 1px solid #30363d; margin-bottom: 16px;">
+                    <span style="font-size: 13px; color: #8b949e; display: block; margin-bottom: 8px; font-weight: 600;">Priority Dimensions:</span>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <label style="color: #e6edf3; font-size: 13px; cursor: pointer; background: #21262d; padding: 4px 10px; border-radius: 12px; border: 1px solid #30363d;"><input type="checkbox" class="dim-tag" value="Wealth & Finance"> Wealth</label>
+                        <label style="color: #e6edf3; font-size: 13px; cursor: pointer; background: #21262d; padding: 4px 10px; border-radius: 12px; border: 1px solid #30363d;"><input type="checkbox" class="dim-tag" value="Physical Health & Vitality"> Health</label>
+                        <label style="color: #e6edf3; font-size: 13px; cursor: pointer; background: #21262d; padding: 4px 10px; border-radius: 12px; border: 1px solid #30363d;"><input type="checkbox" class="dim-tag" value="Relationships & Network"> Relationships</label>
+                        <label style="color: #e6edf3; font-size: 13px; cursor: pointer; background: #21262d; padding: 4px 10px; border-radius: 12px; border: 1px solid #30363d;"><input type="checkbox" class="dim-tag" value="Creative Ventures"> Creative</label>
+                    </div>
+                </div>
+
+                <div style="background: #161b22; padding: 12px; border-radius: 8px; border: 1px solid #30363d; margin-bottom: 16px;">
+                    <span style="font-size: 13px; color: #8b949e; display: block; margin-bottom: 8px; font-weight: 600;">Execution Horizon:</span>
+                    <label style="color: #e6edf3; font-size: 14px; margin-right: 20px; cursor: pointer;">
+                        <input type="radio" name="strategyMode" value="micro" checked> <b>Micro-Path</b> (Next 24 Hours)
+                    </label>
+                    <label style="color: #e6edf3; font-size: 14px; cursor: pointer;">
+                        <input type="radio" name="strategyMode" value="macro"> <b>Macro-Path</b> (Master Blueprint)
+                    </label>
+                </div>
+
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="generateFreeOutline()" style="padding: 12px 24px; background: #1f6feb; color: #ffffff; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">Generate Free Blueprint Outline</button>
+                    <button onclick="clearOutput()" style="padding: 12px 18px; background: #21262d; color: #f85149; font-weight: 600; border: 1px solid #30363d; border-radius: 6px; cursor: pointer; font-size: 14px;">Clear</button>
+                </div>
+            </section>
+
+            <div id="loading" class="no-print" style="display:none; color: #58a6ff; font-style: italic; margin: 16px 0;">Architecting your strategy...</div>
+            <main id="outputContainer" style="margin-top: 24px; color: #c9d1d9;"></main>
+            
+            <!-- THE HOOK BUTTON -->
+            <button id="unlockBtn" class="premium-lock-btn no-print" onclick="document.getElementById('paywallModal').style.display = 'flex';">🔒 Unlock Full Micro-Step Execution ($99)</button>
+        </main>
+    </div>
 
     <script>
+        let historyBank = JSON.parse(localStorage.getItem('pathHistory')) || [];
+        let isRecording = false;
+        let recognition = null;
+
         window.onload = function() {
-            if(localStorage.getItem('gemini_key')) {
-                document.getElementById('apiKeyInput').value = localStorage.getItem('gemini_key');
-            }
-            if(localStorage.getItem('savedStepsV2')) {
-                document.getElementById('stepList').innerHTML = localStorage.getItem('savedStepsV2');
-            }
+            if(localStorage.getItem('gemini_key')) document.getElementById('apiKeyInput').value = localStorage.getItem('gemini_key');
+            renderHistory();
         };
 
         function saveApiKey() {
             let key = document.getElementById('apiKeyInput').value.trim();
-            if(key) {
-                localStorage.setItem('gemini_key', key);
-                alert('API Key saved securely to your browser storage.');
-            }
+            if(key) { localStorage.setItem('gemini_key', key); alert('API Key saved.'); }
         }
 
-        async function generateAIPath() {
+        // --- STEP 1: GENERATE FREE MARKETING OUTLINE (THE HOOK) ---
+        async function generateFreeOutline() {
             let apiKey = localStorage.getItem('gemini_key') || document.getElementById('apiKeyInput').value.trim();
             let goal = document.getElementById('goalInput').value.trim();
-            
-            if(!apiKey) {
-                alert('Please enter and save your Gemini API key first.');
-                return;
-            }
-            if(!goal) return;
+            if(!apiKey) { alert('Save API key first.'); return; }
+            if(!goal) { alert('Define your vision first.'); return; }
 
             document.getElementById('loading').style.display = 'block';
-            document.getElementById('stepList').innerHTML = '';
+            document.getElementById('outputContainer').innerHTML = '';
+            document.getElementById('unlockBtn').style.display = 'none';
 
-            let mode = document.querySelector('input[name="strategyMode"]:checked').value;
-            let prompt = "";
+            let checkedTags = Array.from(document.querySelectorAll('.dim-tag:checked')).map(cb => cb.value);
+            let tagContext = checkedTags.length > 0 ? `Explicitly mention these dimensions: ${checkedTags.join(', ')}.` : "";
 
-            if (mode === 'micro') {
-                prompt = `You are an elite tactical assistant for an ADHD builder. Break down this goal into a strict 3-step chronological execution plan: "${goal}". 
-                Format your response strictly as 3 HTML list items (<li>) using this format:
-                <li><b>Step 1 [Immediate Action]:</b> [Specific, tiny first physical step]</li>
-                <li><b>Step 2 [Environment Setup]:</b> [System setup required]</li>
-                <li><b>Step 3 [Execution Milestone]:</b> [First major measurable output]</li>
-                Do not include markdown backticks or extra conversational filler, output raw HTML list items only.`;
-            } else {
-                prompt = `You are an elite strategic planner. The user wants to achieve this major life goal: "${goal}".
-                Break this down into a highly structured, pragmatic, and realistic multi-phase roadmap.
-                Format your response strictly as HTML list items (<li>) outlining 4 distinct phases (e.g., Phase 1: Foundation, Phase 2: Building, etc.). Under each phase, provide 2 actionable bullet points.
-                Do not include markdown backticks or extra conversational filler, output raw HTML list items only.`;
-            }
+            let prompt = `You are an elite software copywriter and life architect. The user wants to achieve this vision: "${goal}". ${tagContext}
+            Generate a powerful, high-converting "Free Teaser Outline" in HTML (no markdown).
+            Structure:
+            <h2>Your Life Path Architecture is Ready</h2>
+            <p>[A powerful paragraph validating their vision and painting a picture of what their life will look like when they execute it].</p>
+            <h3>The 3 Core Phases of Your Path:</h3>
+            <ul><li>[Phase 1 Title & Brief Summary - NO MICRO STEPS]</li><li>[Phase 2 Title & Brief Summary]</li><li>[Phase 3 Title & Brief Summary]</li></ul>
+            <p><b>Status:</b> The AI has successfully computed the exact, granular, day-by-day micro-steps required to guarantee this outcome. The execution engine is locked and ready for deployment.</p>`;
 
             try {
-                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`,  {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }]
-                    })
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { maxOutputTokens: 2000, temperature: 0.7 } })
                 });
 
                 let data = await response.json();
                 document.getElementById('loading').style.display = 'none';
 
-                if (!response.ok) {
-                    let errorMsg = data.error && data.error.message ? data.error.message : JSON.stringify(data);
-                    document.getElementById('stepList').innerHTML = `<li><b>API Error:</b> ${errorMsg}</li>`;
-                    return;
-                }
-
-                if(data.candidates && data.candidates[0].content) {
-                    let aiText = data.candidates[0].content.parts[0].text;
-                    aiText = aiText.replace(/```html/g, '').replace(/```/g, '').trim();
-                    document.getElementById('stepList').innerHTML = aiText;
-                    localStorage.setItem('savedStepsV2', aiText);
-                } else {
-                    document.getElementById('stepList').innerHTML = '<li><b>Error:</b> Received empty response structure from API.</li>';
+                if(data.candidates) {
+                    let aiText = data.candidates[0].content.parts[0].text.replace(/```html/g, '').replace(/```/g, '').trim();
+                    document.getElementById('outputContainer').innerHTML = aiText;
+                    document.getElementById('unlockBtn').style.display = 'block'; // Show the big green unlock button
                 }
             } catch (err) {
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('stepList').innerHTML = `<li><b>Network Exception:</b> ${err.message}</li>`;
+                document.getElementById('outputContainer').innerHTML = `<p style="color:#f85149;">Error: ${err.message}</p>`;
             }
         }
 
-        function clearTasks() {
-            document.getElementById('stepList').innerHTML = '';
-            localStorage.removeItem('savedStepsV2');
+        // --- STEP 2: EXECUTE FULL PAID GENERATION ---
+        async function executePaidGeneration() {
+            document.getElementById('paywallModal').style.display = 'none';
+            document.getElementById('unlockBtn').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('outputContainer').innerHTML = '<h3 style="color:#00ffcc;">Payment Verified. Compiling Deep Execution Engine...</h3>';
+
+            let apiKey = localStorage.getItem('gemini_key') || document.getElementById('apiKeyInput').value.trim();
+            let goal = document.getElementById('goalInput').value.trim();
+            let mode = document.querySelector('input[name="strategyMode"]:checked').value;
+            let checkedTags = Array.from(document.querySelectorAll('.dim-tag:checked')).map(cb => cb.value);
+            let tagContext = checkedTags.length > 0 ? `\n\nCRITICAL OVERRIDE: Focus heavily on these dimensions: ${checkedTags.join(', ')}.` : "";
+            
+            let prompt = mode === 'micro' ? 
+                `You are a universal strategic life-architect. Goal: "${goal}". ${tagContext}\nProvide a practical sequence of micro-steps for immediate execution. Format in HTML. Structure: 1. Immediate Tasks (Next 24 Hrs), 2. Habit Sequence (Days 2-14), 3. Verification (Days 15-30).` : 
+                `You are a universal master life-architect. Vision: "${goal}". ${tagContext}\nConstruct an exhaustive Life Path Blueprint. Format in HTML. Structure: 1. Foundation & Systems, 2. Execution Micro-Milestones, 3. Long-Horizon Mastery.`;
+
+            try {
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { maxOutputTokens: 8192, temperature: 0.65 } })
+                });
+
+                let data = await response.json();
+                document.getElementById('loading').style.display = 'none';
+
+                if(data.candidates) {
+                    let aiText = data.candidates[0].content.parts[0].text.replace(/```html/g, '').replace(/```/g, '').trim();
+                    
+                    // Add the print button directly to the generated output for easy export
+                    aiText = `<button class="no-print" onclick="window.print()" style="margin-bottom: 20px; padding: 10px 15px; background: #00ffcc; color: #000; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;">🖨️ Export Blueprint to PDF</button>` + aiText;
+                    
+                    document.getElementById('outputContainer').innerHTML = aiText;
+                    saveToHistory(goal, aiText);
+                }
+            } catch (err) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('outputContainer').innerHTML = `<p style="color:#f85149;">Error: ${err.message}</p>`;
+            }
+        }
+
+        // --- HISTORY LOGIC ---
+        function saveToHistory(goal, output) {
+            let snippet = goal.length > 35 ? goal.substring(0, 35) + "..." : goal;
+            historyBank.unshift({ id: Date.now(), title: snippet, data: output });
+            if(historyBank.length > 10) historyBank.pop();
+            localStorage.setItem('pathHistory', JSON.stringify(historyBank));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            let html = historyBank.map((item, idx) => 
+                `<div class="history-item" onclick="loadHistory(${idx})">📄 ${item.title}</div>`
+            ).join('');
+            document.getElementById('historyList').innerHTML = html || "<span style='color:#8b949e; font-size: 12px;'>No history yet.</span>";
+        }
+
+        function loadHistory(index) {
+            document.getElementById('outputContainer').innerHTML = historyBank[index].data;
+            document.getElementById('unlockBtn').style.display = 'none'; // Hide unlock button when viewing old paid paths
+        }
+
+        function clearHistory() {
+            if(confirm("Wipe all saved paths?")) { historyBank = []; localStorage.removeItem('pathHistory'); renderHistory(); clearOutput(); }
+        }
+
+        function clearOutput() {
+            document.getElementById('outputContainer').innerHTML = '';
             document.getElementById('goalInput').value = '';
+            document.getElementById('unlockBtn').style.display = 'none';
+        }
+
+        // --- VOICE LOGIC ---
+        function toggleVoice() {
+            let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) { alert("Voice dictation requires Google Chrome, Edge, or Samsung Internet."); return; }
+            if (!recognition) {
+                recognition = new SpeechRecognition(); recognition.continuous = true; recognition.interimResults = true;
+                recognition.onresult = (e) => {
+                    let text = '';
+                    for (let i = e.resultIndex; i < e.results.length; ++i) if (e.results[i].isFinal) text += e.results[i][0].transcript + " ";
+                    if(text) document.getElementById('goalInput').value += text;
+                };
+            }
+            if (isRecording) {
+                recognition.stop(); document.getElementById('micBtn').innerText = "🎤 Dictate Vision"; document.getElementById('micBtn').style.background = "#21262d"; document.getElementById('micBtn').style.color = "#58a6ff"; isRecording = false;
+            } else {
+                recognition.start(); document.getElementById('micBtn').innerText = "🛑 Recording..."; document.getElementById('micBtn').style.background = "#f85149"; document.getElementById('micBtn').style.color = "#ffffff"; isRecording = true;
+            }
         }
     </script>
 </body>
